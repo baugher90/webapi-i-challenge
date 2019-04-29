@@ -2,6 +2,7 @@
 const express = require("express");
 const db = require("./data/db.js");
 const server = express();
+server.use(express.json());
 server.listen(4000, () => console.log("API running on port 4000"));
 
 //==========================================================Get Test
@@ -10,7 +11,7 @@ server.get("/", (req, res) => {
 });
 
 //==========================================================Post Requests
-server.post("api/users", (req, res) => {
+server.post("/api/users", (req, res) => {
   const user = req.body;
   db.insert(user)
     .then(user => {
@@ -36,10 +37,10 @@ server.post("api/users", (req, res) => {
 });
 
 //==========================================================Get Requests
-server.get("api/users", (req, res) => {
+server.get("/api/users", (req, res) => {
   db.find()
     .then(users => {
-      res.status(201).json(users);
+      res.status(201).json({users});
     })
     .catch(err => {
       res
@@ -49,12 +50,12 @@ server.get("api/users", (req, res) => {
 });
 
 //----------------------------------------------------------
-server.get("api/users/:id", (req, res) => {
+server.get("/api/users/:id", (req, res) => {
   const id = req.params.id;
   db.findById(id)
     .then(user => {
       if (user) {
-        res.status(201).json(user);
+        res.status(201).json({user});
       } else {
         res
           .status(404)
@@ -69,13 +70,13 @@ server.get("api/users/:id", (req, res) => {
 });
 
 //==========================================================Delete Requests
-server.delete("api/users/:id", (req, res) => {
+server.delete("/api/users/:id", (req, res) => {
   const id = req.params.id;
 
   db.remove(id)
     .then(user => {
       if (user) {
-        res.status(201).json(user);
+        res.status(201).json({user});
       } else {
         res
           .status(404)
@@ -88,7 +89,7 @@ server.delete("api/users/:id", (req, res) => {
 });
 
 //==========================================================Put Requests
-server.put("api/users/:id", (req, res) => {
+server.put("/api/users/:id", (req, res) => {
   const id = req.params.id;
   const userInfo = req.body;
   db.update(id, userInfo)
@@ -102,7 +103,7 @@ server.put("api/users/:id", (req, res) => {
           .status(400)
           .json({ errorMessage: "Please provide name and bio for the user." });
       } else {
-        res.status(201).json(userInfo);
+        res.status(201).json({userInfo});
       }
     })
     .catch(err => {
